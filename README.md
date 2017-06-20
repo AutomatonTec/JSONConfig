@@ -1,6 +1,6 @@
 # JSONConfig
 
-This is a simple json based json configuration reader for Perfect.
+This is a simple json based configuration library for Perfect.
 
 Rather than presenting a flat json file for your configuration needs, this library lets you organize it a bit more.
 
