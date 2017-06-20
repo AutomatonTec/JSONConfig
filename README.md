@@ -21,6 +21,7 @@ swift package generate-xcodeproj
 ## Example usage:
 
 ```swift
+import JSONConfig
 // somewhere, perhaps in main.swift, determine the path to your config file
 #if os(Linux)
     let configSource = "./config/ApplicationConfiguration_Linux.json"
