@@ -1,85 +1,60 @@
 # JSONConfig
 
-Perfect Empty Starter Project, plus a few steps
+This is a simple json based json configuration reader for Perfect.
 
-This project started off as a blank Perfect project. Then I added a bunch from [raywenderlich.com's great tutorial series.](https://videos.raywenderlich.com/courses/77-server-side-swift-with-perfect/lessons/6) and what I learned from Jonathan Guthrie's post [Easily Secure your Perfect Server Side Swift code with HTTPS](https://medium.com/@iamjono/easily-secure-your-perfect-server-side-swift-code-with-https-3df86a8cab28)
+Rather than presenting a flat json file for your configuration needs, this library lets you organize it a bit more.
 
-I'm going to write about the process in my [blog... link to be updated.](http://automatontec.ca)
+## Setup: 
 
-## Compatibility with Swift
-
-The master branch of this project currently compiles with **Xcode 8.2** or the **Swift 3.0.2** toolchain on Ubuntu.
-
-## Building & Running
-
-The following will clone and build an the starter project and launch the server on port 8081 if built/run on Xcode or port 443 if built/run from the command line. But to get to that point, you'll have to either read my blog post or Guthrie's post. First it will startup with port 80 from the command line.
-
-```
-git clone https://github.com/AutomatonTec/Acronym.git
-cd Acronym
-swift build
-.build/debug/Acronym
-```
-
-You should see the following output:
-
-```
-[INFO] Running setup: acronym
-[INFO] Starting HTTP server sub.your-domain.com on 0.0.0.0:80
-```
-
-If you are running it from Xcode, you should see the following output:
-
-```
-[INFO] Running setup: acronym
-[INFO] Starting HTTP server sub.your-domain.com on 0.0.0.0:8081
-```
-
-This means the server is running and waiting for connections. 
-
-Hit control-c to terminate the server.
-
-## Starter Content
-
-I wanted a starter project that would allow for the use of port 443. Not using https can make for complications in app development. It is what is expected and required for many applications.
-
-I also wanted a starting point that didn't just plop things in main. The main in this project looks like this:
+Include the JSONConfig dependancy in your project's Package.swift file:
 
 ```swift
-import PerfectLib
-import PerfectHTTP
-import PerfectHTTPServer
+.Package(url: "https://github.com/AutomatonTec/JSONConfig.git", majorVersion: 0, minor: 1)
+```
 
-Environment.initializeDatabaseConnector()
+Rebuild your Xcode project after changing your Package.swift file.
 
-let setupObj = Acronym()
-try? setupObj.setup()
+```
+swift package generate-xcodeproj
+```
 
-let basic = BasicController()
-let files = FilesController()
+## Example usage:
 
-let server = HTTPServer()
-server.serverName = Environment.serverName
-server.serverPort = Environment.serverPort
+```swift
+// somewhere, perhaps in main.swift, determine the path to your config file
+#if os(Linux)
+    let configSource = "./config/ApplicationConfiguration_Linux.json"
+#else
+    let configSource = "./config/ApplicationConfiguration_macOS.json"
+#endif
 
-server.addRoutes(Routes(basic.routes))
-server.addRoutes(Routes(files.routes))
-
-if let tls = Environment.tls {
-    server.ssl              = (tls.certPath, tls.keyPath ?? tls.certPath)
-    server.caCert           = tls.caCertPath
-    server.certVerifyMode   = tls.certVerifyMode
-    server.cipherList       = tls.cipherList
+// somewhere, anywhere
+func setupDatabase() {
+    MySQLConnector.host     = JSONConfig.shared.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
+    MySQLConnector.username = JSONConfig.shared.string(forKeyPath: "database.username", otherwise: "db_user")
+    MySQLConnector.password = JSONConfig.shared.string(forKeyPath: "database.password", otherwise: "best_password")
+    MySQLConnector.database = JSONConfig.shared.string(forKeyPath: "database.database", otherwise: "db_user")
 }
 
-do {
-    try server.start()
-} catch PerfectError.networkError(let err, let msg) {
-    print("Network error thrown: \(err) \(msg)")
+func setupServer(server:HTTPServer) {
+    server.serverName = JSONConfig.shared.string(forKeyPath: "server.name", otherwise: "sub.your-domain.com")
+    server.serverPort = UInt16(JSONConfig.shared.integer(forKeyPath: "server.port", otherwise: 8080))
 }
 ```
 
+In your configuration json file, you can have something like:
 
-
-## Further Information
-For more information on the Perfect project, please visit [perfect.org](http://perfect.org).
+```json
+{
+    "server": {
+        "name": "www.your-domain.com",
+        "port": 80
+    },
+    "database": {
+        "host":     "127.0.0.1",
+        "username": "db_bob",
+        "password": "bob_password",
+        "database": "db_bob"
+    }
+}
+```
