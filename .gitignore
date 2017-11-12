@@ -2,3 +2,9 @@
 /.build
 /Packages
 /*.xcodeproj
+/.packages_lin
+buildlinux
+Package.swift.orig
+PADockerfile_build
+Package.pins
+Package.resolved
