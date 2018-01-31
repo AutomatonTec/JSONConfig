@@ -5,6 +5,6 @@ let package = Package(
     name: "JSONConfig",
     targets: [],
     dependencies: [
-        .Package(url: "https://github.com/PerfectlySoft/PerfectLib.git", majorVersion: 3),
+        .Package(url: "https://github.com/PerfectlySoft/Perfect.git", majorVersion: 3),
     ]
 )
