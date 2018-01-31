@@ -1,10 +1,21 @@
-// Generated automatically by Perfect Assistant Application
-// Date: 2017-06-20 00:27:04 +0000
+// swift-tools-version:4.0
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
 import PackageDescription
+
 let package = Package(
     name: "JSONConfig",
-    targets: [],
+    products: [
+        .library(
+            name: "JSONConfig",
+            targets: ["JSONConfig"]),
+    ],
     dependencies: [
-        .Package(url: "https://github.com/PerfectlySoft/Perfect.git", majorVersion: 3),
+        .package(url: "https://github.com/PerfectlySoft/Perfect.git", "3.0.0"..<"4.0.0"),
+    ],
+    targets: [
+        .target(
+            name: "JSONConfig",
+            dependencies: ["PerfectLib"]),
     ]
 )

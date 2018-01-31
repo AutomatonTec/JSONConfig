@@ -1,38 +1,38 @@
-# JSONConfig [简体中文](README.zh_CN.md)
+# JSONConfig
 
-This is a simple json based configuration library for Perfect.
+这是一个基于Perfect的简单的JSON配置函数库。
 
-Rather than presenting a flat json file for your configuration needs, this library lets you organize it a bit more.
+通过设置一个扁平化的json文件，您能够更好的配置服务器项目。
 
 ## Setup: 
 
-Include the JSONConfig dependency in your project's Package.swift file:
+请修改您项目的Package.swift文件
 
-``` swift
+```swift
 .package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "0.1.1")
 
-// section dependencies
+// 在dependencies章节中
 dependencies: ["JSONConfig"]
 ```
 
-Rebuild your Xcode project after changing your Package.swift file.
+如果按照上述方法改变了Package.swift文件，请更新Xcode项目设置：
 
 ```
 swift package generate-xcodeproj
 ```
 
-## Example usage:
+## 使用方法
 
 ```swift
 import JSONConfig
-// somewhere, perhaps in main.swift, determine the path to your config file
+// 请在程序中（比如main.swift）设置：
 #if os(Linux)
     let configSource = "./config/ApplicationConfiguration_Linux.json"
 #else
     let configSource = "./config/ApplicationConfiguration_macOS.json"
 #endif
 
-// somewhere, anywhere
+// 其他地方设置
 func setupDatabase() {
     MySQLConnector.host     = JSONConfig.shared.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
     MySQLConnector.username = JSONConfig.shared.string(forKeyPath: "database.username", otherwise: "db_user")
@@ -46,7 +46,7 @@ func setupServer(server:HTTPServer) {
 }
 ```
 
-In your configuration json file, you can have something like:
+您的JSON配置文件看起来像这样：
 
 ```json
 {
