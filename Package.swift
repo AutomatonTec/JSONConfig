@@ -11,7 +11,7 @@ let package = Package(
             targets: ["JSONConfig"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/PerfectlySoft/Perfect.git", "3.0.0"..<"4.0.0"),
+        .package(url: "https://github.com/PerfectlySoft/PerfectLib.git", "3.0.0"..<"4.0.0"),
     ],
     targets: [
         .target(
