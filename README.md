@@ -23,11 +23,15 @@ swift package generate-xcodeproj
 ```swift
 import JSONConfig
 // somewhere, perhaps in main.swift, determine the path to your config file
+
+let configServerDefaults = "./config/server/common.json"
 #if os(Linux)
-    let configSource = "./config/ApplicationConfiguration_Linux.json"
+    let configServer = "./config/server/linux.json"
 #else
-    let configSource = "./config/ApplicationConfiguration_macOS.json"
+    let configServer = "./config/server/macOS.json"
 #endif
+
+JSONConfig.shared.initialize(withJsonAt:configServer, defaultsInJsonAt:configServerDefaults)
 
 // somewhere, anywhere
 func setupDatabase() {
