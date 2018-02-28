@@ -12,7 +12,10 @@ public class JSONConfig {
     public static let shared = JSONConfig()
     private var json:[String:Any]?
 
-    /// initialze the configuration with json at source. The json is first populated by the json at defaults (if it exists)
+    /**
+     Initialze the configuration with json at source. The json is first populated by the json at defaults (if it exists)
+     Note that the defaults are not deeply updated. Just the top level of keys are updated
+     */
     public func initialize(withJsonAt source:String, defaultsInJsonAt defaults:String? = nil) {
         self.json = nil
         if let defaults = defaults {
