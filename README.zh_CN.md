@@ -9,7 +9,7 @@
 请修改您项目的Package.swift文件
 
 ```swift
-.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.2")
+.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.3")
 
 // 在dependencies章节中
 dependencies: ["JSONConfig"]

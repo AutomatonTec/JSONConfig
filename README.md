@@ -9,7 +9,7 @@ Rather than presenting a flat json file for your configuration needs, this libra
 Include the JSONConfig dependency in your project's Package.swift file:
 
 ``` swift
-.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.2")
+.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.3")
 
 // section dependencies
 dependencies: ["JSONConfig"]
