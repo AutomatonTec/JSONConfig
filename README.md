@@ -57,7 +57,7 @@ In your common json configuration file, you might have something like:
 	"server": {
 		"name" : "api.your-domain.com",
 		"port" : 80
-	}
+	},
     "database": {
         "host":     "127.0.0.1",
         "username": "db_bob",
