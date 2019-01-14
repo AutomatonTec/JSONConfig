@@ -9,7 +9,7 @@ Rather than presenting a flat json file for your configuration needs, this libra
 Include the JSONConfig dependency in your project's Package.swift file:
 
 ``` swift
-.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "0.1.1")
+.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.2")
 
 // section dependencies
 dependencies: ["JSONConfig"]
@@ -34,35 +34,46 @@ let configServerDefaults = "./config/server/common.json"
     let configServer = "./config/server/macOS.json"
 #endif
 
-JSONConfig.shared.initialize(withJsonAt:configServer, defaultsInJsonAt:configServerDefaults)
+let config = JSONConfig(withJsonAt:configServer, defaultsInJsonAt:configServerDefaults)
 
 // somewhere, anywhere
-func setupDatabase() {
-    MySQLConnector.host     = JSONConfig.shared.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
-    MySQLConnector.username = JSONConfig.shared.string(forKeyPath: "database.username", otherwise: "db_user")
-    MySQLConnector.password = JSONConfig.shared.string(forKeyPath: "database.password", otherwise: "best_password")
-    MySQLConnector.database = JSONConfig.shared.string(forKeyPath: "database.database", otherwise: "db_user")
+func setupDatabase(withConfig config:JSONConfig) {
+    MySQLConnector.host     = config.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
+    MySQLConnector.username = config.string(forKeyPath: "database.username", otherwise: "db_user")
+    MySQLConnector.password = config.string(forKeyPath: "database.password", otherwise: "best_password")
+    MySQLConnector.database = config.string(forKeyPath: "database.database", otherwise: "db_user")
 }
 
-func setupServer(server:HTTPServer) {
-    server.serverName = JSONConfig.shared.string(forKeyPath: "server.name", otherwise: "sub.your-domain.com")
-    server.serverPort = UInt16(JSONConfig.shared.integer(forKeyPath: "server.port", otherwise: 8080))
+func setupServer(withConfig config:JSONConfig, server:HTTPServer) {
+    server.serverName = config.string(forKeyPath: "server.name", otherwise: "sub.your-domain.com")
+    server.serverPort = UInt16(config.integer(forKeyPath: "server.port", otherwise: 8080))
 }
 ```
 
-In your configuration json file, you can have something like:
+In your common json configuration file, you might have something like:
 
 ```json
 {
-    "server": {
-        "name": "www.your-domain.com",
-        "port": 80
-    },
+	"server": {
+		"name" : "api.your-domain.com",
+		"port" : 80
+	}
     "database": {
         "host":     "127.0.0.1",
         "username": "db_bob",
         "password": "bob_password",
         "database": "db_bob"
     }
+}
+```
+
+And in your macOS json configuration file, you might have something like:
+
+```json
+{
+	"server": {
+		"name" : "localhost",
+		"port" : 8181
+	}
 }
 ```

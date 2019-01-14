@@ -9,7 +9,7 @@
 请修改您项目的Package.swift文件
 
 ```swift
-.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "0.1.1")
+.package(url: "https://github.com/AutomatonTec/JSONConfig.git", from: "1.1.2")
 
 // 在dependencies章节中
 dependencies: ["JSONConfig"]
@@ -32,17 +32,19 @@ import JSONConfig
     let configSource = "./config/ApplicationConfiguration_macOS.json"
 #endif
 
+let config = JSONConfig(withJsonAt:configServer, defaultsInJsonAt:configServerDefaults)
+
 // 其他地方设置
-func setupDatabase() {
-    MySQLConnector.host     = JSONConfig.shared.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
-    MySQLConnector.username = JSONConfig.shared.string(forKeyPath: "database.username", otherwise: "db_user")
-    MySQLConnector.password = JSONConfig.shared.string(forKeyPath: "database.password", otherwise: "best_password")
-    MySQLConnector.database = JSONConfig.shared.string(forKeyPath: "database.database", otherwise: "db_user")
+func setupDatabase(withConfig config:JSONConfig) {
+    MySQLConnector.host     = config.string(forKeyPath: "database.host", otherwise: "127.0.0.1")
+    MySQLConnector.username = config.string(forKeyPath: "database.username", otherwise: "db_user")
+    MySQLConnector.password = config.string(forKeyPath: "database.password", otherwise: "best_password")
+    MySQLConnector.database = config.string(forKeyPath: "database.database", otherwise: "db_user")
 }
 
-func setupServer(server:HTTPServer) {
-    server.serverName = JSONConfig.shared.string(forKeyPath: "server.name", otherwise: "sub.your-domain.com")
-    server.serverPort = UInt16(JSONConfig.shared.integer(forKeyPath: "server.port", otherwise: 8080))
+func setupServer(withConfig config:JSONConfig, server:HTTPServer) {
+    server.serverName = config.string(forKeyPath: "server.name", otherwise: "sub.your-domain.com")
+    server.serverPort = UInt16(config.integer(forKeyPath: "server.port", otherwise: 8080))
 }
 ```
 
