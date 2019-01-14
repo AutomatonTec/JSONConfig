@@ -11,34 +11,44 @@ import PerfectLib
 public class JSONConfig {
     public static let shared = JSONConfig()
     private var json:[String:Any]?
-    public var source : String? {
-        didSet {
-            if self.source != oldValue {
-                self.json = nil
-                
-                guard let source = self.source else { return }
-                let file = File(source)
-                do {
-                    try file.open(.read, permissions: .readUser)
-                    defer {
-                        file.close()
-                    }
-                    
-                    let text = try file.readString()
-                    self.json = try text.jsonDecode() as? [String:Any]
-                    
-                } catch {
-                    print("JSONConfig error: " + error.localizedDescription)
+
+    /**
+     Initialze the configuration with json at source. The json is first populated by the json at defaults (if it exists)
+     Note that the defaults are not deeply updated. Just the top level of keys are updated
+     */
+    public func initialize(withJsonAt source:String, defaultsInJsonAt defaults:String? = nil) {
+        self.json = nil
+        if let defaults = defaults {
+            self.read(jsonAt: defaults)
+        }
+        self.read(jsonAt: source)
+    }
+
+    private func read(jsonAt path:String) {
+        let file = File(path)
+        do {
+            try file.open(.read, permissions: .readUser)
+            defer {
+                file.close()
+            }
+
+            let text = try file.readString()
+            let dict = try text.jsonDecode() as? [String:Any]
+            if nil == self.json {
+                self.json = dict
+            }
+            else if let dict = dict {
+                for (k,v) in dict {
+                    self.json?[k] = v
                 }
             }
+
+        } catch {
+            print("JSONConfig error: " + error.localizedDescription)
         }
+
     }
-    
-    private convenience init(_ json:[String:Any]?) {
-        self.init()
-        self.json = json
-    }
-    
+
     public func value(forKey key:String) -> Any? {
         guard let json = self.json else { return nil }
         return json[key]
